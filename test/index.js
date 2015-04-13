@@ -269,4 +269,49 @@ describe('bcp47', function () {
       done();
     });
   });
+
+  describe('stringifying bad values', function() {
+    it('should reject language-less tags with private use', function (done) {
+      expect(bcp47.stringify({
+          langtag: {
+              privateuse: [ "aaaaa" ]
+          }
+      })).to.be.equal(null);
+
+      done();
+    });
+
+    it('should reject language-less tags with no grandfather or private use area', function (done) {
+      expect(bcp47.stringify({ })).to.be.equal(null);
+      expect(bcp47.stringify({
+          langtag: {
+              language: { }
+          }
+      })).to.be.equal(null);
+
+      expect(bcp47.stringify({
+          langtag: {
+              language: { },
+              extlang: true
+          }
+      })).to.be.equal(null);
+
+      done();
+    });
+
+    it('should ignore bad extlangs', function (done) {
+      expect(bcp47.stringify({ })).to.be.equal(null);
+      expect(bcp47.stringify({
+          langtag: {
+              language: {
+                language: 'aa'
+              },
+              extlang: true
+          }
+      })).to.be.equal('aa');
+
+      done();
+    });
+
+  });
 });
